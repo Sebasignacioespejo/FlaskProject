@@ -1,0 +1,32 @@
+body {
+    background-color: #121212;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+}
+
+.card {
+    background-color: #1e1e1e;
+    color: white;
+    border: 1px solid #333;
+    margin-top: 20px;
+}
+
+.card img {
+    height: 250px;
+    object-fit: cover;
+}
+
+.footer {
+    background-color: #1e1e1e;
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+    margin-top: auto;
+    position: relative;
+}
