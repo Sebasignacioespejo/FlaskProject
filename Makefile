@@ -24,6 +24,8 @@ test:
 
 infra:
 	cd Terraform && terraform init && terraform apply -auto-approve
+	cd Terraform && terraform output -raw ec2_public_ip > ../EC2_IP.txt
+	cd Terraform && terraform output -raw rds_endpoint > ../RDS_ENDPOINT.txt
 
 configure:
 	cd Ansible && ANSIBLE_HOST_KEY_CHECKING=False \
