@@ -22,6 +22,15 @@ test:
 		-e DB_PASSWORD=$(DB_PASSWORD) \
 		$(IMAGE) python -m unittest discover -s tests
 
+generate-tfvars:
+	@echo 'ec2_ami = "$(EC2_AMI)"' > terraform/terraform.tfvars
+	@echo 'ec2_key_name = "$(EC2_KEY_NAME)"' >> terraform/terraform.tfvars
+	@echo 'db_user = "$(DB_USER)"' >> terraform/terraform.tfvars
+	@echo 'db_password = "$(DB_PASSWORD)"' >> terraform/terraform.tfvars
+	@echo 'db_name = "$(DB_NAME)"' >> terraform/terraform.tfvars
+	@echo 'jenkins_ip = "$(JENKINS_IP)"' >> terraform/terraform.tfvars
+	@echo 'jenkins_private_ip = "$(JENKINS_PRIVATE_IP)"' >> terraform/terraform.tfvars
+
 infra:
 	cd Terraform && terraform init && terraform apply -auto-approve
 	cd Terraform && terraform output -raw ec2_public_ip > ../EC2_IP.txt
