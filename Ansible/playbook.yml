@@ -1,0 +1,28 @@
+- hosts: flask
+  become: yes
+  tasks:
+    - name: Instalar Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Iniciar Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Pull de la imagen
+      shell: "docker pull {{ image_name }}:{{ image_tag }}"
+
+    - name: Correr el contenedor
+      shell: |
+        docker stop flaskapp || true
+        docker rm flaskapp || true
+        docker run -d --name flaskapp -p 80:5000 \
+          -e DB_HOST={{ db_host }} \
+          -e DB_NAME={{ db_name }} \
+          -e DB_USER={{ db_user }} \
+          -e DB_PASSWORD={{ db_password }} \
+          {{ image_name }}:{{ image_tag }}
