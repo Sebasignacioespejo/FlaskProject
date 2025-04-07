@@ -8,14 +8,14 @@ DOCKER_USER ?= user
 DOCKER_PASS ?= pass
 
 docker-build:
-	docker build -t $(IMAGE) .
+	sudo docker build -t $(IMAGE) .
 
 docker-push:
-	echo "$(DOCKER_PASS)" | docker login -u "$(DOCKER_USER)" --password-stdin
-	docker push $(IMAGE)
+	echo "$(DOCKER_PASS)" | sudo docker login -u "$(DOCKER_USER)" --password-stdin
+	sudo docker push $(IMAGE)
 
 test:
-	docker run --rm \
+	sudo docker run --rm \
 		-e DB_HOST=$(DB_HOST) \
 		-e DB_NAME=$(DB_NAME) \
 		-e DB_USER=$(DB_USER) \
