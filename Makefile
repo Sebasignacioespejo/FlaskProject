@@ -23,10 +23,10 @@ test:
 		$(IMAGE) python -m unittest discover -s tests
 
 infra:
-	cd terraform && terraform init && terraform apply -auto-approve
+	cd Terraform && terraform init && terraform apply -auto-approve
 
 configure:
-	cd ansible && ANSIBLE_HOST_KEY_CHECKING=False \
+	cd Ansible && ANSIBLE_HOST_KEY_CHECKING=False \
 	ansible-playbook -i inventory.yml playbook.yml \
 	--extra-vars "docker_image=$(IMAGE)" \
 	--private-key $(KEY)
