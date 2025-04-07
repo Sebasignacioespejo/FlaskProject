@@ -28,7 +28,10 @@ infra:
 	cd Terraform && terraform output -raw rds_endpoint > ../RDS_ENDPOINT.txt
 
 configure:
+	$(eval EC2_IP=$(shell cat EC2_IP.txt))
+	$(eval RDS_HOST=$(shell cat RDS_ENDPOINT.txt))
 	cd Ansible && ANSIBLE_HOST_KEY_CHECKING=False \
-	ansible-playbook -i inventory.yml playbook.yml \
-	--extra-vars "docker_image=$(IMAGE)" \
+	ansible-playbook -i $(EC2_IP), playbook.yml \
+	--extra-vars "image_name=$(IMAGE) image_tag=latest \
+	db_host=$(RDS_HOST) db_name=$(DB_NAME) db_user=$(DB_USER) db_password=$(DB_PASSWORD)" \
 	--private-key $(KEY)
