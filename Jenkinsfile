@@ -10,6 +10,10 @@ pipeline {
         DOCKER_USER    = credentials('DOCKER_USER')
         DOCKER_PASS    = credentials('DOCKER_PASS')
         IMAGE_NAME     = "nachocker/my-flask-app"
+
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_REGION = 'us-east-2'
     }
 
     stages {
