@@ -43,7 +43,7 @@ pipeline {
             steps {
                 sh '''
                     echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                    make docker-push IMAGE=$(IMAGE_NAME)
+                    make docker-push IMAGE_NAME=$IMAGE_NAME
                 '''
             }
         }
