@@ -23,13 +23,13 @@ test:
 		$(IMAGE_NAME) python -m unittest discover -s tests
 
 generate-tfvars:
-	@echo 'ec2_ami = "$(EC2_AMI)"' > terraform/terraform.tfvars
-	@echo 'ec2_key_name = "$(EC2_KEY_NAME)"' >> terraform/terraform.tfvars
-	@echo 'db_user = "$(DB_USER)"' >> terraform/terraform.tfvars
-	@echo 'db_password = "$(DB_PASSWORD)"' >> terraform/terraform.tfvars
-	@echo 'db_name = "$(DB_NAME)"' >> terraform/terraform.tfvars
-	@echo 'jenkins_ip = "$(JENKINS_IP)"' >> terraform/terraform.tfvars
-	@echo 'jenkins_private_ip = "$(JENKINS_PRIVATE_IP)"' >> terraform/terraform.tfvars
+	@echo 'ec2_ami = "$(EC2_AMI)"' > Terraform/terraform.tfvars
+	@echo 'ec2_key_name = "$(EC2_KEY_NAME)"' >> Terraform/terraform.tfvars
+	@echo 'db_user = "$(DB_USER)"' >> Terraform/terraform.tfvars
+	@echo 'db_password = "$(DB_PASSWORD)"' >> Terraform/terraform.tfvars
+	@echo 'db_name = "$(DB_NAME)"' >> Terraform/terraform.tfvars
+	@echo 'jenkins_ip = "$(JENKINS_IP)"' >> Terraform/terraform.tfvars
+	@echo 'jenkins_private_ip = "$(JENKINS_PRIVATE_IP)"' >> Terraform/terraform.tfvars
 
 infra:
 	cd Terraform && terraform init && terraform apply -auto-approve
