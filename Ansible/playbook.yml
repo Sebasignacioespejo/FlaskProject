@@ -1,4 +1,4 @@
-- hosts: flask
+- hosts: "{{ EC2_IP }}"
   become: yes
   tasks:
     - name: Instalar Docker
