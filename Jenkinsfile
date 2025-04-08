@@ -24,30 +24,32 @@ pipeline {
         stage('Get EC2 IP Address') {
             steps {
                 script {
-                    def token = sh(
-                        script: '''
-                            curl -s -X PUT "http://169.254.169.254/latest/api/token" \
-                            -H "X-aws-ec2-metadata-token-ttl-seconds: 10"
-                        ''',
-                        returnStdout: true
-                    ).trim()
-
-                    if (token) {
-                        def privateIp = sh(
-                            script: "curl -s -H \"X-aws-ec2-metadata-token: ${token}\" http://169.254.169.254/latest/meta-data/local-ipv4",
+                    try {
+                        def token = sh(
+                            script: '''
+                                curl -s -X PUT "http://169.254.169.254/latest/api/token" \
+                                -H "X-aws-ec2-metadata-token-ttl-seconds: 10"
+                            ''',
                             returnStdout: true
                         ).trim()
 
-                        def publicIp = sh(
-                            script: "curl -s -H \"X-aws-ec2-metadata-token: ${token}\" http://169.254.169.254/latest/meta-data/public-ipv4",
-                            returnStdout: true
-                        ).trim()
+                        if (token) {
+                            def privateIp = sh(
+                                script: "curl -s -H \"X-aws-ec2-metadata-token: ${token}\" http://169.254.169.254/latest/meta-data/local-ipv4",
+                                returnStdout: true
+                            ).trim()
 
-                        env.JENKINS_PRIVATE_IP = privateIp
-                        env.JENKINS_IP = publicIp
+                            def publicIp = sh(
+                                script: "curl -s -H \"X-aws-ec2-metadata-token: ${token}\" http://169.254.169.254/latest/meta-data/public-ipv4",
+                                returnStdout: true
+                            ).trim()
 
-                        echo "EC2 detectada"
-                    } else {
+                            env.JENKINS_PRIVATE_IP = privateIp
+                            env.JENKINS_IP = publicIp
+
+                            echo "EC2 detectada"
+                        }
+                    } catch (Exception e) {
                         echo "No es una EC2"
                     }
                 }
