@@ -2,6 +2,14 @@ provider "aws" {
   region = "us-east-2"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "mi-backend-terraform"     # <-- El nombre de tu bucket
+    key    = "infra/terraform.tfstate"  # <-- Ruta dentro del bucket
+    region = "us-east-2"                # <-- Región donde está el bucket
+  }
+}
+
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 }
