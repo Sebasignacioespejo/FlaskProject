@@ -40,3 +40,10 @@ configure:
 	--extra-vars "image_name=$(IMAGE_NAME) image_tag=latest \
 	db_host=$(RDS_HOST) db_name=$(DB_NAME) db_user=$(DB_USER) db_password=$(DB_PASSWORD)" \
 	--private-key $(KEY)
+
+clean:
+	docker system prune -af --volumes
+
+	rm -rf $(WORKSPACE)/*
+
+	sudo rm -rf /tmp/*

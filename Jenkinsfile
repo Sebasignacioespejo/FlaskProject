@@ -96,6 +96,10 @@ pipeline {
     }
 
     post {
+        always {
+            echo 'Limpiando espacio'
+            sh 'make clean'
+        }
         failure {
             echo 'Todo mal unu'
         }
