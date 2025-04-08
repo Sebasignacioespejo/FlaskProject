@@ -40,7 +40,7 @@ configure:
 	$(eval EC2_IP=$(shell cat EC2_IP.txt))
 	$(eval RDS_HOST=$(shell cat RDS_ENDPOINT.txt))
 	cd Ansible && ANSIBLE_HOST_KEY_CHECKING=False \
-	ansible-playbook -i $(EC2_IP), playbook.yml \
+	ansible-playbook -i $(EC2_IP), playbook.yml -u ubuntu \
 	--extra-vars "image_name=$(IMAGE_NAME) image_tag=latest \
 	db_host=$(RDS_HOST) db_name=$(DB_NAME) db_user=$(DB_USER) db_password=$(DB_PASSWORD)" \
 	--private-key $(KEY)
