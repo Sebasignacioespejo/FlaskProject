@@ -1,4 +1,4 @@
-- hosts: localhost
+- hosts: "{{ ec2_ip }}"
   become: yes
   vars:
     ansible_user: ubuntu
@@ -25,7 +25,7 @@
       shell: |
         docker stop flaskapp || true
         docker rm flaskapp || true
-        docker run -d --name flaskapp -p 80:5000 \
+        docker run -d --name flaskapp -p 5000:5000 \
           -e DB_HOST={{ db_host }} \
           -e DB_NAME={{ db_name }} \
           -e DB_USER={{ db_user }} \
