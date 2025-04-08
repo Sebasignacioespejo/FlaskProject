@@ -12,8 +12,8 @@ pipeline {
 
         EC2_AMI            = 'ami-04f167a56786e4b09'
         EC2_KEY_NAME       = 'flask_key'
-        JENKINS_IP         = ''
-        JENKINS_PRIVATE_IP = ''
+        JENKINS_IP         = credentials('JENKINS_IP')
+        JENKINS_PRIVATE_IP = credentials('JENKINS_PRIVATE_IP')
 
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
