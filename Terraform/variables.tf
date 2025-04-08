@@ -20,10 +20,10 @@ variable "db_name" {
   type = string
 }
 
-variable "jenkins_ip" {
+variable "control_ip" {
   type = string
 }
 
-variable "jenkins_private_ip" {
+variable "agent_ip" {
   type = string
 }

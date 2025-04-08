@@ -2,56 +2,30 @@ pipeline {
     agent any
 
     environment {
-        DB_HOST        = credentials('DB_HOST')
-        DB_NAME        = credentials('DB_NAME')
-        DB_USER        = credentials('DB_USER')
-        DB_PASSWORD    = credentials('DB_PASSWORD')
-        DOCKER_USER    = credentials('DOCKER_USER')
-        DOCKER_PASS    = credentials('DOCKER_PASS')
-        IMAGE_NAME     = "nachocker/my-flask-app"
+        DB_HOST                 = credentials('DB_HOST')
+        DB_NAME                 = credentials('DB_NAME')
+        DB_USER                 = credentials('DB_USER')
+        DB_PASSWORD             = credentials('DB_PASSWORD')
+        DOCKER_USER             = credentials('DOCKER_USER')
+        DOCKER_PASS             = credentials('DOCKER_PASS')
+        IMAGE_NAME              = "nachocker/my-flask-app"
 
-        EC2_AMI            = 'ami-04f167a56786e4b09'
-        EC2_KEY_NAME       = 'flask_key'
-        JENKINS_IP         = credentials('JENKINS_IP')
-        JENKINS_PRIVATE_IP = credentials('JENKINS_PRIVATE_IP')
+        EC2_AMI                 = 'ami-04f167a56786e4b09'
+        EC2_KEY_NAME            = 'flask_key'
+        CONTROL_IP              = credentials('CONTROL_IP')
+        AGENT_IP                = ''
 
-        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_REGION = 'us-east-2'
+        AWS_ACCESS_KEY_ID       = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY   = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_REGION              = 'us-east-2'
     }
 
     stages {
-        stage('Get EC2 IP Address') {
+        stage('Get Agent IP Address') {
             steps {
                 script {
-                    try {
-                        def token = sh(
-                            script: '''
-                                curl -s -X PUT "http://169.254.169.254/latest/api/token" \
-                                -H "X-aws-ec2-metadata-token-ttl-seconds: 10"
-                            ''',
-                            returnStdout: true
-                        ).trim()
-
-                        if (token) {
-                            def privateIp = sh(
-                                script: "curl -s -H \"X-aws-ec2-metadata-token: ${token}\" http://169.254.169.254/latest/meta-data/local-ipv4",
-                                returnStdout: true
-                            ).trim()
-
-                            def publicIp = sh(
-                                script: "curl -s -H \"X-aws-ec2-metadata-token: ${token}\" http://169.254.169.254/latest/meta-data/public-ipv4",
-                                returnStdout: true
-                            ).trim()
-
-                            env.JENKINS_PRIVATE_IP = privateIp
-                            env.JENKINS_IP = publicIp
-
-                            echo "EC2 detectada"
-                        }
-                    } catch (Exception e) {
-                        echo "No es una EC2"
-                    }
+                    env.AGENT_IP = sh(script: "curl -s https://checkip.amazonaws.com", returnStdout: true).trim()
+                    echo "IP publica del agente: ${env.AGENT_IP}"
                 }
             }
         }
@@ -92,8 +66,8 @@ pipeline {
                         DB_USER=$DB_USER \
                         DB_PASSWORD=$DB_PASSWORD \
                         DB_NAME=$DB_NAME \
-                        JENKINS_IP=$JENKINS_IP \
-                        JENKINS_PRIVATE_IP=$JENKINS_PRIVATE_IP
+                        CONTROL_IP=$CONTROL_IP \
+                        AGENT_IP=$AGENT_IP
                 '''
             }
         }

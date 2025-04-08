@@ -26,7 +26,14 @@ resource "aws_security_group" "ec2_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${var.jenkins_ip}/32"]
+    cidr_blocks = ["${var.control_ip}/32"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["${var.agent_ip}/32"]
   }
 
   egress {
@@ -50,12 +57,12 @@ resource "aws_security_group" "rds_sg" {
   }
 }
 
-resource "aws_security_group_rule" "rds_from_jenkins" {
+resource "aws_security_group_rule" "rds_from_control" {
   type              = "ingress"
   from_port         = 5432
   to_port           = 5432
   protocol          = "tcp"
-  cidr_blocks = ["${var.jenkins_private_ip}/32"]
+  cidr_blocks = ["${var.control_ip}/32"]
   security_group_id = aws_security_group.rds_sg.id
 }
 

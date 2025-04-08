@@ -2,10 +2,6 @@ DB_HOST ?= localhost
 DB_NAME ?= test
 DB_USER ?= user
 DB_PASSWORD ?= pass
-KEY ?= ~/.ssh/id_rsa
-IMAGE_NAME ?= my-flask-app
-DOCKER_USER ?= user
-DOCKER_PASS ?= pass
 
 docker-build:
 	docker build -t $(IMAGE_NAME) .
@@ -28,8 +24,8 @@ generate-tfvars:
 	@echo 'db_user = "$(DB_USER)"' >> Terraform/terraform.tfvars
 	@echo 'db_password = "$(DB_PASSWORD)"' >> Terraform/terraform.tfvars
 	@echo 'db_name = "$(DB_NAME)"' >> Terraform/terraform.tfvars
-	@echo 'jenkins_ip = "$(JENKINS_IP)"' >> Terraform/terraform.tfvars
-	@echo 'jenkins_private_ip = "$(JENKINS_PRIVATE_IP)"' >> Terraform/terraform.tfvars
+	@echo 'control_ip = "$(CONTROL_IP)"' >> Terraform/terraform.tfvars
+	@echo 'agent_ip = "$(AGENT_IP)"' >> Terraform/terraform.tfvars
 
 infra:
 	cd Terraform && terraform init && terraform apply -auto-approve
