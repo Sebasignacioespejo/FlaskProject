@@ -4,7 +4,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "mi-backend-terraform"     # <-- El nombre de tu bucket
+    bucket = "terraform-backend-wow"     # <-- El nombre de tu bucket
     key    = "infra/terraform.tfstate"  # <-- Ruta dentro del bucket
     region = "us-east-2"                # <-- Región donde está el bucket
   }
