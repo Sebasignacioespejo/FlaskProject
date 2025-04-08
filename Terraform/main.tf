@@ -10,12 +10,6 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 }
 
-resource "aws_subnet" "main" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.1.0/24"
-  map_public_ip_on_launch = true
-}
-
 resource "aws_security_group" "ec2_sg" {
   name        = "ec2_sg"
   description = "Security group for Flask EC2"
@@ -77,7 +71,7 @@ resource "aws_security_group_rule" "rds_from_flask" {
 resource "aws_instance" "flask_instance" {
   ami                    = var.ec2_ami
   instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.main.id
+  subnet_id              = aws_subnet.subnet_a.id
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
   key_name               = var.ec2_key_name
 
@@ -86,9 +80,23 @@ resource "aws_instance" "flask_instance" {
   }
 }
 
+resource "aws_subnet" "subnet_a" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "us-east-2a"
+  map_public_ip_on_launch = true
+}
+
+resource "aws_subnet" "subnet_b" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = "us-east-2b"
+  map_public_ip_on_launch = true
+}
+
 resource "aws_db_subnet_group" "default" {
   name       = "main-subnet-group"
-  subnet_ids = [aws_subnet.main.id]
+  subnet_ids = [aws_subnet.subnet_a.id, aws_subnet.subnet_b.id]
 }
 
 resource "aws_db_instance" "postgres" {
