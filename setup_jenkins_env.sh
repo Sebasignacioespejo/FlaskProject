@@ -26,9 +26,6 @@ echo \
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
-echo "Añadiendo usuario 'jenkins' al grupo docker"
-sudo usermod -aG docker jenkins
-
 echo "Instalando Terraform"
 sudo apt-get install -y gnupg software-properties-common wget lsb-release
 
@@ -50,3 +47,6 @@ echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkin
   sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
 sudo apt-get update
 sudo apt-get install jenkins -y
+
+echo "Añadiendo usuario 'jenkins' al grupo docker"
+sudo usermod -aG docker jenkins
