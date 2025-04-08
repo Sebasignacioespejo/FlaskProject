@@ -32,7 +32,7 @@ resource "aws_security_group" "ec2_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.jenkins_ip + "/32"] # solo Jenkins puede hacer SSH
+    cidr_blocks = ["${var.jenkins_ip}/32"]
   }
 
   egress {
@@ -61,7 +61,7 @@ resource "aws_security_group_rule" "rds_from_jenkins" {
   from_port         = 5432
   to_port           = 5432
   protocol          = "tcp"
-  cidr_blocks       = [var.jenkins_private_ip + "/32"]
+  cidr_blocks = ["${var.jenkins_private_ip}/32"]
   security_group_id = aws_security_group.rds_sg.id
 }
 
@@ -70,7 +70,7 @@ resource "aws_security_group_rule" "rds_from_flask" {
   from_port         = 5432
   to_port           = 5432
   protocol          = "tcp"
-  cidr_blocks       = [aws_instance.flask_instance.private_ip + "/32"]
+  cidr_blocks = ["${aws_instance.flask_instance.private_ip}/32"]
   security_group_id = aws_security_group.rds_sg.id
 }
 
