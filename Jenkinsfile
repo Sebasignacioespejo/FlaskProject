@@ -24,7 +24,8 @@ pipeline {
         stage('Get Agent IP Address') {
             steps {
                 script {
-                    env.AGENT_IP = sh(script: "curl -s https://checkip.amazonaws.com", returnStdout: true).trim()
+                    def agent_ip = sh(script: "curl -s https://checkip.amazonaws.com", returnStdout: true).trim()
+                    env.AGENT_IP = agent_ip
                     echo "IP publica del agente: ${env.AGENT_IP}"
                 }
             }
