@@ -1,4 +1,4 @@
-- hosts: "{{ EC2_IP }}"
+- hosts: localhost
   become: yes
   tasks:
     - name: Instalar Docker
