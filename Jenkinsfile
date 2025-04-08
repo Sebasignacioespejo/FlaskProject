@@ -21,21 +21,21 @@ pipeline {
     }
 
     stages {
-        stage('Get EC2 IP Address') {
-            steps {
-                script {
-                    def aws_metadata_token = sh(script: 'curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"', returnStdout: true).trim()
-                    def ec2_private_ip_address = sh(script: "curl -H \"X-aws-ec2-metadata-token: $aws_metadata_token\" http://169.254.169.254/latest/meta-data/local-ipv4", returnStdout: true).trim()
-                    def ec2_ip_address = sh(script: "curl -H \"X-aws-ec2-metadata-token: $aws_metadata_token\" http://169.254.169.254/latest/meta-data/public-ipv4", returnStdout: true).trim()
+        // stage('Get EC2 IP Address') {
+        //     steps {
+        //         script {
+        //             def aws_metadata_token = sh(script: 'curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"', returnStdout: true).trim()
+        //             def ec2_private_ip_address = sh(script: "curl -H \"X-aws-ec2-metadata-token: $aws_metadata_token\" http://169.254.169.254/latest/meta-data/local-ipv4", returnStdout: true).trim()
+        //             def ec2_ip_address = sh(script: "curl -H \"X-aws-ec2-metadata-token: $aws_metadata_token\" http://169.254.169.254/latest/meta-data/public-ipv4", returnStdout: true).trim()
 
-                    env.JENKINS_PRIVATE_IP = ec2_private_ip_address
-                    env.JENKINS_IP = ec2_ip_address
+        //             env.JENKINS_PRIVATE_IP = ec2_private_ip_address
+        //             env.JENKINS_IP = ec2_ip_address
 
-                    echo "La IP privada de la instancia EC2 es: ${env.JENKINS_PRIVATE_IP}"
-                    echo "La IP publica de la instancia EC2 es: ${env.JENKINS_IP}"
-                }
-            }
-        }
+        //             echo "La IP privada de la instancia EC2 es: ${env.JENKINS_PRIVATE_IP}"
+        //             echo "La IP publica de la instancia EC2 es: ${env.JENKINS_IP}"
+        //         }
+        //     }
+        // }
 
         stage('Clone Repo') {
             steps {
