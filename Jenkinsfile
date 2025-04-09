@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()
+    }
+
     environment {
         DB_HOST                 = credentials('DB_HOST')
         DB_NAME                 = credentials('DB_NAME')
@@ -49,6 +53,9 @@ pipeline {
         }
 
         stage('Push to Docker Hub') {
+            when {
+                branch 'main'
+            }
             steps {
                 sh '''
                     echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
@@ -58,6 +65,9 @@ pipeline {
         }
 
         stage('Generate Terraform Variables') {
+            when {
+                branch 'main'
+            }
             steps {
                 sh '''
                     make generate-tfvars \
@@ -73,12 +83,18 @@ pipeline {
         }
 
         stage('Terraform Apply') {
+            when {
+                branch 'main'
+            }
             steps {
                 sh 'make infra'
             }
         }
 
         stage('Configure EC2 with Ansible') {
+            when {
+                branch 'main'
+            }
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2_ssh_key', keyFileVariable: 'KEY')]) {
                     sh '''
