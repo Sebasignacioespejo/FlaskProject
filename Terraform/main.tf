@@ -137,8 +137,8 @@ resource "aws_security_group_rule" "ec2_from_rds" {
   from_port                = 5432
   to_port                  = 5432
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.rds_sg.id  # Permitir tráfico desde el grupo de seguridad de la RDS
-  security_group_id        = aws_security_group.ec2_sg.id    # Hacia el grupo de seguridad de la EC2
+  source_security_group_id = aws_security_group.rds_sg.id 
+  security_group_id        = aws_security_group.ec2_sg.id   
 }
 
 # =====================================
