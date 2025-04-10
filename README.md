@@ -1,7 +1,7 @@
-# HTLVCHAFA - CS:GO Players Stats  
+# SSTV - CS:GO Players Stats  
 
-Este es un proyecto Flask / py que muestra estadísticas de jugadores de CS  
+Flask Proyect / py That shows stats from players  
  
-- API en Flask con datos de los jugadores.  
-- Interfaz con TailwindCSS.
-- (futura implementacion de scrapper big data??)
+- API in Flask con players data and stats.  
+- TailwindCSS Interface.
+- (Work on bigdata??? or automation).
