@@ -133,12 +133,12 @@ resource "aws_security_group_rule" "rds_from_flask" {
 }
 
 resource "aws_security_group_rule" "ec2_from_rds" {
-  type              = "ingress"
-  from_port         = 5432
-  to_port           = 5432
-  protocol          = "tcp"
-  cidr_blocks = ["${aws_db_instance.postgres.private_ip}/32"]
-  security_group_id = aws_security_group.ec2_sg.id
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.rds_sg.id 
+  security_group_id        = aws_security_group.ec2_sg.id   
 }
 
 # =====================================
