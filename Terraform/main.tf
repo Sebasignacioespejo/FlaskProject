@@ -4,11 +4,15 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "terraform-backend-wow"     # <-- El nombre de tu bucket
-    key    = "infra/terraform.tfstate"  # <-- Ruta dentro del bucket
-    region = "us-east-2"                # <-- Región donde está el bucket
+    bucket = "terraform-backend-wow"   
+    key    = "infra/terraform.tfstate"  
+    region = "us-east-2"               
   }
 }
+
+# =====================================
+# VPC Configuration
+# =====================================
 
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
@@ -17,6 +21,51 @@ resource "aws_vpc" "main" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 }
+
+# =====================================
+# Subnets Configuration
+# =====================================
+
+resource "aws_subnet" "subnet_a" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.3.0/24"
+  availability_zone       = "us-east-2a"
+  map_public_ip_on_launch = true
+}
+
+resource "aws_subnet" "subnet_b" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.4.0/24"
+  availability_zone       = "us-east-2b"
+  map_public_ip_on_launch = true
+}
+
+# =====================================
+# Route Table Configuration
+# =====================================
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.gw.id
+  }
+}
+
+resource "aws_route_table_association" "public_subnet_a" {
+  subnet_id      = aws_subnet.subnet_a.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public_subnet_b" {
+  subnet_id      = aws_subnet.subnet_b.id
+  route_table_id = aws_route_table.public.id
+}
+
+# =====================================
+# Security Groups Configuration
+# =====================================
 
 resource "aws_security_group" "ec2_sg" {
   name        = "ec2_sg"
@@ -83,6 +132,19 @@ resource "aws_security_group_rule" "rds_from_flask" {
   security_group_id = aws_security_group.rds_sg.id
 }
 
+resource "aws_security_group_rule" "ec2_from_rds" {
+  type              = "ingress"
+  from_port         = 5432
+  to_port           = 5432
+  protocol          = "tcp"
+  cidr_blocks = ["${aws_db_instance.postgres.private_ip}/32"]
+  security_group_id = aws_security_group.ec2_sg.id
+}
+
+# =====================================
+# EC2 Instance Configuration
+# =====================================
+
 resource "aws_instance" "flask_instance" {
   ami                    = var.ec2_ami
   instance_type          = "t2.micro"
@@ -95,42 +157,13 @@ resource "aws_instance" "flask_instance" {
   }
 }
 
-resource "aws_subnet" "subnet_a" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.3.0/24"
-  availability_zone       = "us-east-2a"
-  map_public_ip_on_launch = true
-}
-
-resource "aws_subnet" "subnet_b" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.4.0/24"
-  availability_zone       = "us-east-2b"
-  map_public_ip_on_launch = true
-}
+# =====================================
+# Database Configuration
+# =====================================
 
 resource "aws_db_subnet_group" "default" {
   name       = "main-subnet-group"
   subnet_ids = [aws_subnet.subnet_a.id, aws_subnet.subnet_b.id]
-}
-
-resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.gw.id
-  }
-}
-
-resource "aws_route_table_association" "public_subnet_a" {
-  subnet_id      = aws_subnet.subnet_a.id
-  route_table_id = aws_route_table.public.id
-}
-
-resource "aws_route_table_association" "public_subnet_b" {
-  subnet_id      = aws_subnet.subnet_b.id
-  route_table_id = aws_route_table.public.id
 }
 
 resource "aws_db_instance" "postgres" {
