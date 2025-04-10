@@ -44,17 +44,17 @@ def get_db_connection():
 # Ruta principal
 @app.route("/")
 def home():
-    conn = get_db_connection()  # Obtén la conexión a la base de datos
-    cur = conn.cursor()  # Crea un cursor
-    cur.execute("SELECT * FROM players")  # Ejecuta una consulta SQL para obtener todos los jugadores
-    players_data = cur.fetchall()  # Obtiene todos los resultados de la consulta
-    cur.close()  # Cierra el cursor
-    conn.close()  # Cierra la conexión a la base de datos
+    conn = get_db_connection()  
+    cur = conn.cursor()  
+    cur.execute("SELECT * FROM players") 
+    players_data = cur.fetchall() 
+    cur.close() 
+    conn.close() 
 
     # Convierte los resultados a un formato más amigable para Jinja (por ejemplo, un diccionario)
     players = {}
     for player in players_data:
-        player_name = player[1]  # Asumiendo que player_name está en la columna 1 (índice 0 es id)
+        player_name = player[1]  
         players[player_name] = {
             'rating': player[2],
             'kd_ratio': player[3],
