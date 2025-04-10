@@ -43,8 +43,5 @@
     - name: Crear directorios para migraciones
       shell: docker exec flaskapp mkdir -p /app/migrations/versions
 
-    - name: Ejecutar flask db migrate dentro del contenedor
-      shell: docker exec flaskapp flask db migrate -m "Initial migration"
-
     - name: Ejecutar flask db upgrade dentro del contenedor
       shell: docker exec flaskapp flask db upgrade
