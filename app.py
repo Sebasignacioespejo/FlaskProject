@@ -1,8 +1,32 @@
 from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import psycopg2
 import os
 
 app = Flask(__name__)
+
+# Configura la conexión
+app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{os.environ.get('DB_USER')}:{os.environ.get('DB_PASSWORD')}@{os.environ.get('DB_HOST')}/{os.environ.get('DB_NAME')}"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Inicializa la DB y Migrate
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+# Crea el modelo de la tabla
+class Player(db.Model):
+    __tablename__ = 'players'
+
+    id = db.Column(db.Integer, primary_key=True)
+    player_name = db.Column(db.String(100), nullable=False)
+    rating = db.Column(db.Float, nullable=False)
+    kd_ratio = db.Column(db.Float, nullable=False)
+    headshot_percentage = db.Column(db.Float, nullable=False)
+    image = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        return f'<Player {self.player_name}>'
 
 # Configura los detalles de la conexión
 db_config = {

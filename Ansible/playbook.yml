@@ -30,4 +30,18 @@
           -e DB_NAME={{ db_name }} \
           -e DB_USER={{ db_user }} \
           -e DB_PASSWORD={{ db_password }} \
+          -e FLASK_APP=app.py \
           {{ image_name }}:{{ image_tag }}
+
+    - name: Esperar a que el contenedor arranque
+      wait_for:
+        host: "{{ ec2_ip }}"
+        port: 5000
+        delay: 3
+        timeout: 30
+
+    - name: Ejecutar flask db migrate dentro del contenedor
+      shell: docker exec flaskapp flask db migrate -m "Initial migration"
+
+    - name: Ejecutar flask db upgrade dentro del contenedor
+      shell: docker exec flaskapp flask db upgrade
