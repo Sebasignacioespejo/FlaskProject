@@ -41,10 +41,7 @@
         timeout: 30
 
     - name: Crear directorios para migraciones
-      docker_container:
-        name: flaskapp
-        command: |
-          mkdir -p /migrations/versions
+      shell: docker exec flaskapp mkdir -p /migrations/versions
 
     - name: Ejecutar flask db migrate dentro del contenedor
       shell: docker exec flaskapp flask db migrate -m "Initial migration"
