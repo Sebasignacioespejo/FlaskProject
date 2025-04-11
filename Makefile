@@ -36,7 +36,7 @@ configure:
 	$(eval EC2_IP=$(shell cat EC2_IP.txt))
 	$(eval RDS_HOST=$(shell cat RDS_ENDPOINT.txt))
 
-	ansible-galaxy install signalfx.splunk_otel_collector
+	ansible-galaxy collection install signalfx.splunk_otel_collector
 	
 	cd Ansible && ANSIBLE_HOST_KEY_CHECKING=False \
 	ansible-playbook -i "$(EC2_IP)," playbook.yml -u ubuntu \
