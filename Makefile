@@ -35,6 +35,9 @@ infra:
 configure:
 	$(eval EC2_IP=$(shell cat EC2_IP.txt))
 	$(eval RDS_HOST=$(shell cat RDS_ENDPOINT.txt))
+
+	ansible-galaxy install signalfx.splunk_otel_collector
+	
 	cd Ansible && ANSIBLE_HOST_KEY_CHECKING=False \
 	ansible-playbook -i "$(EC2_IP)," playbook.yml -u ubuntu \
 	--extra-vars "image_name=$(IMAGE_NAME) image_tag=latest \
