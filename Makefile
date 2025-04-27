@@ -19,18 +19,23 @@ test:
 		$(IMAGE_NAME) python -m unittest discover -s tests
 
 generate-tfvars:
-	@echo 'ec2_ami = "$(EC2_AMI)"' > Terraform/terraform.tfvars
-	@echo 'ec2_key_name = "$(EC2_KEY_NAME)"' >> Terraform/terraform.tfvars
-	@echo 'db_user = "$(DB_USER)"' >> Terraform/terraform.tfvars
-	@echo 'db_password = "$(DB_PASSWORD)"' >> Terraform/terraform.tfvars
-	@echo 'db_name = "$(DB_NAME)"' >> Terraform/terraform.tfvars
-	@echo 'control_ip = "$(CONTROL_IP)"' >> Terraform/terraform.tfvars
-	@echo 'agent_ip = "$(AGENT_IP)"' >> Terraform/terraform.tfvars
+	@echo 'ec2_ami = "$(EC2_AMI)"' > Terraform/prod/ec2/terraform.tfvars
+	@echo 'ec2_key_name = "$(EC2_KEY_NAME)"' >> Terraform/prod/ec2/terraform.tfvars
+	@echo 'control_ip = "$(CONTROL_IP)"' >> Terraform/prod/ec2/terraform.tfvars
+	@echo 'agent_ip = "$(AGENT_IP)"' >> Terraform/prod/ec2/terraform.tfvars
+
+	@echo 'db_user = "$(DB_USER)"' > Terraform/prod/rds/terraform.tfvars
+	@echo 'db_password = "$(DB_PASSWORD)"' >> Terraform/prod/rds/terraform.tfvars
+	@echo 'db_name = "$(DB_NAME)"' >> Terraform/prod/rds/terraform.tfvars
 
 infra:
-	cd Terraform && terraform init && terraform apply -auto-approve
-	cd Terraform && terraform output -raw ec2_public_ip > ../EC2_IP.txt
-	cd Terraform && terraform output -raw rds_endpoint > ../RDS_ENDPOINT.txt
+	cd Terraform/prod/network && terraform init && terraform apply -auto-approve
+	cd Terraform/prod/ec2 && terraform init && terraform apply -auto-approve
+	cd Terraform/prod/rds && terraform init && terraform apply -auto-approve
+	cd Terraform/prod/security-rules && terraform init && terraform apply -auto-approve
+
+	cd Terraform/prod/ec2 && terraform output -raw ec2_public_ip > ../../../EC2_IP.txt
+	cd Terraform/prod/rds && terraform output -raw rds_endpoint > ../../../RDS_ENDPOINT.txt
 
 configure:
 	$(eval EC2_IP=$(shell cat EC2_IP.txt))
